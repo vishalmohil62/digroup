@@ -35,12 +35,12 @@ const transporter = nodemailer.createTransport({
         })
         res.status(200).json({success: true,message: 'message sent successfully'})
     }catch(err){
-    console.error(err);
-    res.status(500).json({
+        console.error("MAIL ERROR:", err);
+        return res.status(500).json({
         success:false,
         error: err.message
-    });
-}
+        });
+    }
 }
 
 module.exports = {submitContactform}
