@@ -24,7 +24,7 @@ const Form = () => {
     let handleOnSubmit = (e)=>{
         e.preventDefault();
         setStatus('Sending message...')
-        axios.post('https://digroup.onrender.com/api/contact',data).then((result)=>{
+        axios.post('https://digroup-production.up.railway.app/api/contact',data).then((result)=>{
           setStatus('Message sent successfully!') 
           setData({
             name: '',
