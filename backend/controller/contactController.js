@@ -9,7 +9,8 @@ const submitContactform = async (req, res) => {
       message: "All fields are required.",
     });
   }
-
+    console.log("EMAIL:", process.env.SMTP_EMAIL);
+    console.log("PASSWORD EXISTS:", !!process.env.SMTP_PASSWORD);
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
