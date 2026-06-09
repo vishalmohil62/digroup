@@ -7,14 +7,19 @@ const submitContactform = async(req,res)=>{
         return res.status(400).json({ success: false, message: "All fields are required." });
     }
 
-    const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: process.env.SMTP_EMAIL,
-            pass: process.env.SMTP_PASSWORD
-        }
-    })
+const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+        user: process.env.SMTP_EMAIL,
+        pass: process.env.SMTP_PASSWORD
+    },
 
+        connectionTimeout: 30000,
+        greetingTimeout: 30000,
+        socketTimeout: 30000
+    });
+    await transporter.verify();
+    console.log("SMTP Connected");
     try{
         await transporter.sendMail({
             from: process.env.SMTP_EMAIL,
