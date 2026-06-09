@@ -1,36 +1,34 @@
 const nodemailer = require("nodemailer");
 
 const submitContactform = async (req, res) => {
-  const { name, email, subject, message } = req.body;
+  try {
+    const { name, email, subject, message } = req.body;
 
-  if (!name || !email || !subject || !message) {
-    return res.status(400).json({
-      success: false,
-      message: "All fields are required.",
-    });
-  }
+    if (!name || !email || !subject || !message) {
+      return res.status(400).json({
+        success: false,
+        message: "All fields are required.",
+      });
+    }
+
     console.log("EMAIL:", process.env.SMTP_EMAIL);
     console.log("PASSWORD EXISTS:", !!process.env.SMTP_PASSWORD);
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.SMTP_EMAIL,
-      pass: process.env.SMTP_PASSWORD,
-    },
-    connectionTimeout: 30000,
-    greetingTimeout: 30000,
-    socketTimeout: 30000,
-  });
 
-  try {
-    await transporter.verify();
-    console.log("SMTP Connected");
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 587,
+      secure: false,
+      auth: {
+        user: process.env.SMTP_EMAIL,
+        pass: process.env.SMTP_PASSWORD,
+      },
+    });
 
     await transporter.sendMail({
       from: process.env.SMTP_EMAIL,
       replyTo: email,
       to: process.env.SMTP_EMAIL,
-      subject: `Production lead: ${subject}`,
+      subject: `Production Lead: ${subject}`,
       html: `
         <h3>New Contact Form Submission</h3>
         <p><strong>Name:</strong> ${name}</p>
