@@ -17,8 +17,9 @@ const submitContactform = async(req,res)=>{
 
     try{
         await transporter.sendMail({
-            from: `${name}   <${email}>`,
-            to: `${process.env.SMTP_EMAIL}`,
+            from: process.env.SMTP_EMAIL,
+            replyTo: email,
+            to: process.env.SMTP_EMAIL,
             subject: `Production lead: ${subject}`,
             html: `<h3>New Contact Form Submission</h3>
           <p><strong>Name:</strong> ${name}</p>
@@ -29,8 +30,12 @@ const submitContactform = async(req,res)=>{
         })
         res.status(200).json({success: true,message: 'message sent successfully'})
     }catch(err){
-        res.status(500).json({success: false, message: 'failed to sent message'})
-    }
+    console.error(err);
+    res.status(500).json({
+        success:false,
+        error: err.message
+    });
+}
 }
 
 module.exports = {submitContactform}
