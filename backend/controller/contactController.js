@@ -16,15 +16,25 @@ const submitContactform = async (req, res) => {
 
     const transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
-      port: 587,
-      secure: false,
+      port: 465,
+      secure: true,
       auth: {
         user: process.env.SMTP_EMAIL,
         pass: process.env.SMTP_PASSWORD,
       },
+      connectionTimeout: 60000,
+      greetingTimeout: 60000,
+      socketTimeout: 60000,
     });
 
-    await transporter.sendMail({
+    console.log("Before Verify");
+
+    await transporter.verify();
+
+    console.log("SMTP Connected");
+    console.log("Sending Mail");
+
+    const info = await transporter.sendMail({
       from: process.env.SMTP_EMAIL,
       replyTo: email,
       to: process.env.SMTP_EMAIL,
@@ -39,16 +49,20 @@ const submitContactform = async (req, res) => {
       `,
     });
 
+    console.log("Mail Sent:", info.messageId);
+
     return res.status(200).json({
       success: true,
       message: "Message sent successfully",
     });
+
   } catch (err) {
     console.error("MAIL ERROR:", err);
 
     return res.status(500).json({
       success: false,
       error: err.message,
+      code: err.code,
     });
   }
 };
